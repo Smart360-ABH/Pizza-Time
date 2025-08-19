@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza Time - Доставка пиццы и суши в Сухуме</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                        'open-sans': ['Open Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#FF6B35',
+                        'secondary': '#2C3E50',
+                        'accent': '#F39C12',
+                        'success': '#27AE60',
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+<body class="bg-gray-50 font-open-sans">
+    <!-- @COMPONENT: Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <div class="text-2xl font-montserrat font-bold text-primary">
+                        <i class="fas fa-pizza-slice mr-2"></i>
+                        Pizza Time
+                    </div>
+                    <div class="hidden md:block text-sm text-secondary">
+                        <i class="fas fa-clock mr-1"></i>
+                        Работаем с 09:00 до 00:00
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex flex-col items-end text-sm">
+                        <div class="font-semibold text-secondary">+7 940 744 22 55</div>
+                        <div class="text-gray-600">г. Сухум ул. Эшба 185</div>
+                    </div>
+                    <button class="bg-primary hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200" data-event="click:toggleCart">
+                        <i class="fas fa-shopping-cart mr-2"></i>
+                        Корзина <span class="bg-white text-primary rounded-full px-2 py-1 text-xs ml-1" data-bind="cartItems.length">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- @END_COMPONENT: Header -->
+
+    <!-- @COMPONENT: HeroSection -->
+    <section class="relative bg-gradient-to-r from-primary to-orange-500 text-white py-16 overflow-hidden">
+        <!-- Hero background with appetizing pizza image -->
+        <div class="absolute inset-0 opacity-20">
+            <img src="https://pixabay.com/get/g5f34bcc3df2f39101b1ccdec9a1f5a9b322d29db485e23f2f938d9cb5d2c889a719a89496b07a6b53549a0ae40f703ed41d7dd3e8e9bb52a61369e29988b679f_1280.jpg" alt="Delicious pizza background" class="w-full h-full object-cover">
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-2xl">
+                <h1 class="text-4xl md:text-6xl font-montserrat font-bold mb-4">
+                    Вкусная доставка в Сухуме!
+                </h1>
+                <p class="text-xl mb-6 opacity-90">
+                    Пицца, суши и роллы с бесплатной доставкой. Большие порции, натуральные ингредиенты.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button class="bg-white text-primary hover:bg-gray-100 px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200" data-event="click:scrollToMenu">
+                        <i class="fas fa-utensils mr-2"></i>
+                        Смотреть меню
+                    </button>
+                    <a href="https://wa.me/79407442255" class="bg-success hover:bg-green-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200 text-center">
+                        <i class="fab fa-whatsapp mr-2"></i>
+                        WhatsApp заказ
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Promotional banner -->
+        <div class="absolute top-4 right-4 bg-accent text-white px-4 py-2 rounded-full font-semibold animate-pulse">
+            <i class="fas fa-gift mr-1"></i>
+            Скидка 25% на первый заказ!
+        </div>
+    </section>
+    <!-- @END_COMPONENT: HeroSection -->
+
+    <!-- @COMPONENT: CategoryNavigation -->
+    <nav class="bg-white shadow-sm sticky top-16 z-40" id="category-nav">
+        <div class="container mx-auto px-4">
+            <div class="flex overflow-x-auto py-4 space-x-8">
+                <a href="#pizza" class="whitespace-nowrap text-secondary hover:text-primary font-semibold border-b-2 border-transparent hover:border-primary pb-2 transition-all duration-200">
+                    <i class="fas fa-pizza-slice mr-2"></i>Пицца
+                </a>
+                <a href="#sushi" class="whitespace-nowrap text-secondary hover:text-primary font-semibold border-b-2 border-transparent hover:border-primary pb-2 transition-all duration-200">
+                    <i class="fas fa-fish mr-2"></i>Суши
+                </a>
+                <a href="#rolls" class="whitespace-nowrap text-secondary hover:text-primary font-semibold border-b-2 border-transparent hover:border-primary pb-2 transition-all duration-200">
+                    <i class="fas fa-circle mr-2"></i>Роллы
+                </a>
+                <a href="#salads" class="whitespace-nowrap text-secondary hover:text-primary font-semibold border-b-2 border-transparent hover:border-primary pb-2 transition-all duration-200">
+                    <i class="fas fa-leaf mr-2"></i>Салаты
+                </a>
+                <a href="#combo" class="whitespace-nowrap text-secondary hover:text-primary font-semibold border-b-2 border-transparent hover:border-primary pb-2 transition-all duration-200">
+                    <i class="fas fa-boxes mr-2"></i>Сеты
+                </a>
+            </div>
+        </div>
+    </nav>
+    <!-- @END_COMPONENT: CategoryNavigation -->
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- @COMPONENT: PizzaSection -->
+        <section id="pizza" class="mb-16">
+            <h2 class="text-3xl font-montserrat font-bold text-secondary mb-8 flex items-center">
+                <i class="fas fa-pizza-slice text-primary mr-3"></i>
+                Пицца
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- @MAP: pizzaItems.map(item => ( -->
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden" data-mock="true">
+                    <!-- Traditional Margherita pizza with fresh basil and mozzarella -->
+                    <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" alt="Пицца Маргарита" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-secondary mb-2" data-bind="item.name">Маргарита</h3>
+                        <p class="text-gray-600 mb-4" data-bind="item.description">Томатный соус, моцарелла, свежий базилик</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-primary" data-bind="item.price">690 ₽</span>
+                            <button class="bg-primary hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors duration-200" data-event="click:addToCart" data-implementation="Add item to cart with quantity selection">
+                                <i class="fas fa-plus mr-2"></i>В корзину
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden" data-mock="true">
+                    <!-- Pepperoni pizza with spicy salami and cheese -->
+                    <img src="https://images.unsplash.com/photo-1628840042765-356cda07504e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" alt="Пицца Пепперони" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-secondary mb-2">Пепперони</h3>
+                        <p class="text-gray-600 mb-4">Острая салями пепперони, моцарелла, томатный соус</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-primary">790 ₽</span>
+                            <button class="bg-primary hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors duration-200">
+                                <i class="fas fa-plus mr-2"></i>В корзину
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden" data-mock="true">
+                    <!-- Four cheese pizza with multiple cheese varieties -->
+                    <img src="https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" alt="Пицца Четыре сыра" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-secondary mb-2">Четыре сыра</h3>
+                        <p class="text-gray-600 mb-4">Моцарелла, пармезан, дор-блю, гауда</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-primary">850 ₽</span>
+                            <button class="bg-primary hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors duration-200">
+                                <i class="fas fa-plus mr-2"></i>В корзину
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+        </section>
+        <!-- @END_COMPONENT: PizzaSection -->
+
+        <!-- @COMPONENT: SushiSection -->
+        <section id="sushi" class="mb-16">
+            <h2 class="text-3xl font-montserrat font-bold text-secondary mb-8 flex items-center">
+                <i class="fas fa-fish text-primary mr-3"></i>
+                Суши
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- @MAP: sushiItems.map(item => ( -->
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden" data-mock="true">
+                    <!-- Fresh salmon nigiri sushi with wasabi -->
+                    <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400" alt="Суши с лососем" class="w-full h-32 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-secondary mb-2">Суши лосось</h3>
+                        <p class="text-gray-600 text-sm mb-3">Свежий лосось, рис, васаби</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold text-primary">120 ₽</span>
+                            <button class="bg-primary hover:bg-orange-600 text-white px-3 py-1 rounded text-sm font-semibold transition-colors duration-200">
+                                <i class="fas fa-plus mr-1"></i>Добавить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden" data-mock="true">
+                    <!-- Fresh tuna sashimi with traditional presentation -->
+                    <img src="https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400" alt="Суши с тунцом" class="w-full h-32 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-secondary mb-2">Суши тунец</h3>
+                        <p class="text-gray-600 text-sm mb-3">Свежий тунец, рис</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold text-primary">140 ₽</span>
+                            <button class="bg-primary hover:bg-orange-600 text-white px-3 py-1 rounded text-sm font-semibold transition-colors duration-200">
+                                <i class="fas fa-plus mr-1"></i>Добавить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden" data-mock="true">
+                    <!-- Eel nigiri sushi with sweet sauce -->
+                    <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400" alt="Суши с угрем" class="w-full h-32 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-secondary mb-2">Суши угорь</h3>
+                        <p class="text-gray-600 text-sm mb-3">Копченый угорь, соус унаги</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold text-primary">150 ₽</span>
+                            <button class="bg-primary hover:bg-orange-600 text-white px-3 py-1 rounded text-sm font-semibold transition-colors duration-200">
+                                <i class="fas fa-plus mr-1"></i>Добавить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden" data-mock="true">
+                    <!-- Shrimp tempura sushi with crispy coating -->
+                    <img src="https://images.unsplash.com/photo-1564489563601-c53cfc451e93?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400" alt="Суши с креветкой" class="w-full h-32 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-secondary mb-2">Суши креветка</h3>
+                        <p class="text-gray-600 text-sm mb-3">Тигровая креветка</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold text-primary">130 ₽</span>
+                            <button class="bg-primary hover:bg-orange-600 text-white px-3 py-1 rounded text-sm font-semibold transition-colors duration-200">
+                                <i class="fas fa-plus mr-1"></i>Добавить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+        </section>
+        <!-- @END_COMPONENT: SushiSection -->
+
+        <!-- @COMPONENT: RollsSection -->
+        <section id="rolls" class="mb-16">
+            <h2 class="text-3xl font-montserrat font-bold text-secondary mb-8 flex items-center">
+                <i class="fas fa-circle text-primary mr-3"></i>
+                Роллы
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- @MAP: rollsItems.map(item => ( -->
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden" data-mock="true">
+                    <!-- California roll with crab and avocado -->
+                    <img src="https://pixabay.com/get/gfcf5c48fc412e4bb0519d1176bc79248e951302e556272f23860bf01fe5cdb3eab92817b57387edf15c823cdcf3fe1b3e17c10873e1669e3e93cfbd2d2d5b471_1280.jpg" alt="Ролл Калифорния" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-secondary mb-2">Калифорния</h3>
+                        <p class="text-gray-600 mb-4">Краб, авокадо, огурец, икра тобико</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-primary">450 ₽</span>
+                            <button class="bg-primary hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors duration-200">
+                                <i class="fas fa-plus mr-2"></i>В корзину
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden" data-mock="true">
+                    <!-- Philadelphia roll with salmon and cream cheese -->
+                    <img src="https://images.unsplash.com/photo-1611143669185-af224c5e3252?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" alt="Ролл Филадельфия" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-secondary mb-2">Филадельфия</h3>
+                        <p class="text-gray-600 mb-4">Лосось, сливочный сыр, огурец</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-primary">520 ₽</span>
+                            <button class="bg-primary hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors duration-200">
+                                <i class="fas fa-plus mr-2"></i>В корзину
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden" data-mock="true">
+                    <!-- Hot baked roll with eel and spicy sauce -->
+                    <img src="https://images.unsplash.com/photo-1617093727343-374698b1b08d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" alt="Запеченный ролл с угрем" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-secondary mb-2">Запеченный с угрем</h3>
+                        <p class="text-gray-600 mb-4">Угорь, авокадо, спайси соус, запечен</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-primary">650 ₽</span>
+                            <button class="bg-primary hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors duration-200">
+                                <i class="fas fa-plus mr-2"></i>В корзину
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+        </section>
+        <!-- @END_COMPONENT: RollsSection -->
+
+        <!-- @COMPONENT: SaladsSection -->
+        <section id="salads" class="mb-16">
+            <h2 class="text-3xl font-montserrat font-bold text-secondary mb-8 flex items-center">
+                <i class="fas fa-leaf text-primary mr-3"></i>
+                Салаты
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- @MAP: saladItems.map(item => ( -->
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden" data-mock="true">
+                    <!-- Fresh Caesar salad with chicken and parmesan -->
+                    <img src="https://images.unsplash.com/photo-1546793665-c74683f339c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" alt="Салат Цезарь" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-secondary mb-2">Цезарь с курицей</h3>
+                        <p class="text-gray-600 mb-4">Курица гриль, салат айсберг, пармезан, сухарики, соус цезарь</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-primary">380 ₽</span>
+                            <button class="bg-primary hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors duration-200">
+                                <i class="fas fa-plus mr-2"></i>В корзину
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden" data-mock="true">
+                    <!-- Fresh Greek salad with feta cheese and olives -->
+                    <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" alt="Греческий салат" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-secondary mb-2">Греческий</h3>
+                        <p class="text-gray-600 mb-4">Томаты, огурцы, сыр фета, маслины, лук, оливковое масло</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-primary">320 ₽</span>
+                            <button class="bg-primary hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors duration-200">
+                                <i class="fas fa-plus mr-2"></i>В корзину
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden" data-mock="true">
+                    <!-- Fresh seafood salad with mixed greens -->
+                    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" alt="Салат с морепродуктами" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-secondary mb-2">Морской коктейль</h3>
+                        <p class="text-gray-600 mb-4">Креветки, кальмары, мидии, микс салатов, лимонная заправка</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-primary">480 ₽</span>
+                            <button class="bg-primary hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors duration-200">
+                                <i class="fas fa-plus mr-2"></i>В корзину
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+        </section>
+        <!-- @END_COMPONENT: SaladsSection -->
+
+        <!-- @COMPONENT: ComboSection -->
+        <section id="combo" class="mb-16">
+            <h2 class="text-3xl font-montserrat font-bold text-secondary mb-8 flex items-center">
+                <i class="fas fa-boxes text-primary mr-3"></i>
+                Выгодные сеты
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- @MAP: comboItems.map(item => ( -->
+                <div class="bg-gradient-to-br from-accent to-orange-400 rounded-xl shadow-xl overflow-hidden text-white relative" data-mock="true">
+                    <div class="absolute top-4 right-4 bg-white text-accent px-3 py-1 rounded-full font-bold text-sm">
+                        СКИДКА 30%
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-montserrat font-bold mb-4">Сет "Семейный"</h3>
+                        <p class="mb-6 opacity-90">2 большие пиццы + ролл Калифорния + ролл Филадельфия + 4 напитка</p>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-sm opacity-75 line-through">2890 ₽</span>
+                                <span class="text-3xl font-bold ml-2">1990 ₽</span>
+                            </div>
+                            <button class="bg-white text-accent hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold transition-colors duration-200">
+                                <i class="fas fa-shopping-cart mr-2"></i>Заказать сет
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-success to-green-500 rounded-xl shadow-xl overflow-hidden text-white relative" data-mock="true">
+                    <div class="absolute top-4 right-4 bg-white text-success px-3 py-1 rounded-full font-bold text-sm">
+                        ТОП ПРОДАЖ
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-montserrat font-bold mb-4">Сет "Суши-микс"</h3>
+                        <p class="mb-6 opacity-90">32 шт суши и роллов: Калифорния, Филадельфия, Острые суши лосось</p>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-sm opacity-75 line-through">1680 ₽</span>
+                                <span class="text-3xl font-bold ml-2">1290 ₽</span>
+                            </div>
+                            <button class="bg-white text-success hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold transition-colors duration-200">
+                                <i class="fas fa-shopping-cart mr-2"></i>Заказать сет
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+        </section>
+        <!-- @END_COMPONENT: ComboSection -->
+    </main>
+
+    <!-- @COMPONENT: DeliveryInfo -->
+    <section class="bg-secondary text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-montserrat font-bold mb-4">Быстрая доставка по Сухуму</h2>
+                <p class="text-xl opacity-90">Привозим горячую еду прямо к вашему порогу</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-motorcycle text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Бесплатная доставка</h3>
+                    <p class="opacity-90">При заказе от 500 рублей доставляем бесплатно</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-clock text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Быстро</h3>
+                    <p class="opacity-90">Среднее время доставки 30-45 минут</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-map-marker-alt text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Везде в Сухуме</h3>
+                    <p class="opacity-90">Доставляем по всему городу без исключения</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: DeliveryInfo -->
+
+    <!-- @COMPONENT: Footer -->
+    <footer class="bg-white py-12 border-t">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="text-2xl font-montserrat font-bold text-primary mb-4">
+                        <i class="fas fa-pizza-slice mr-2"></i>
+                        Pizza Time
+                    </div>
+                    <p class="text-gray-600 mb-4">Вкусная еда с доставкой по Сухуму. Большие порции, натуральные ингредиенты, доступные цены.</p>
+                    <div class="flex space-x-4">
+                        <a href="https://wa.me/79407442255" class="text-success hover:text-green-600 transition-colors duration-200">
+                            <i class="fab fa-whatsapp text-2xl"></i>
+                        </a>
+                        <a href="tel:+79407442255" class="text-primary hover:text-orange-600 transition-colors duration-200">
+                            <i class="fas fa-phone text-2xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-secondary mb-4">Контакты</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-phone mr-3 text-primary"></i>
+                            +7 940 744 22 55
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fab fa-whatsapp mr-3 text-success"></i>
+                            +7 940 744 22 55
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-map-marker-alt mr-3 text-primary"></i>
+                            г. Сухум ул. Эшба 185
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-secondary mb-4">Режим работы</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Понедельник - Воскресенье</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">09:00 - 00:00</span>
+                        </div>
+                        <div class="mt-4 text-sm text-gray-500">
+                            Доставка работает в том же режиме
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t mt-8 pt-8 text-center text-gray-600">
+                <p>&copy; 2025 Pizza Time. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <!-- @END_COMPONENT: Footer -->
+
+    <!-- @COMPONENT: FloatingWhatsApp -->
+    <a href="https://wa.me/79407442255" class="fixed bottom-6 right-6 bg-success hover:bg-green-600 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg transition-colors duration-200 z-50">
+        <i class="fab fa-whatsapp text-2xl"></i>
+    </a>
+    <!-- @END_COMPONENT: FloatingWhatsApp -->
+
+    <!-- @COMPONENT: CartOverlay -->
+    <!-- @STATE: isCartOpen:boolean = false -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden" data-event="click:closeCart">
+        <div class="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-xl transform transition-transform duration-300" data-implementation="Shopping cart with items, quantities, and checkout">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h3 class="text-xl font-semibold">Ваша корзина</h3>
+                <button class="text-gray-500 hover:text-gray-700" data-event="click:closeCart">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 flex-1 overflow-y-auto">
+                <div class="text-center text-gray-500 py-12" data-mock="true">
+                    <i class="fas fa-shopping-cart text-4xl mb-4 opacity-50"></i>
+                    <p>Корзина пуста</p>
+                    <p class="text-sm mt-2">Добавьте товары из меню</p>
+                </div>
+            </div>
+            
+            <div class="border-t p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-lg font-semibold">Итого:</span>
+                    <span class="text-2xl font-bold text-primary" data-bind="cartTotal">0 ₽</span>
+                </div>
+                <button class="w-full bg-primary hover:bg-orange-600 text-white py-4 rounded-lg font-semibold text-lg transition-colors duration-200" data-event="click:proceedToCheckout">
+                    <i class="fas fa-credit-card mr-2"></i>
+                    Оформить заказ
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: CartOverlay -->
+
+    <script>
+        // TODO: Implement business logic, API calls, and state management
+        (function() {
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Category navigation active state
+            const categoryLinks = document.querySelectorAll('#category-nav a');
+            const sections = document.querySelectorAll('section[id]');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 200;
+                    if (pageYOffset >= sectionTop) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                categoryLinks.forEach(link => {
+                    link.classList.remove('border-primary', 'text-primary');
+                    link.classList.add('border-transparent', 'text-secondary');
+                    if (link.getAttribute('href').substring(1) === current) {
+                        link.classList.add('border-primary', 'text-primary');
+                        link.classList.remove('border-transparent', 'text-secondary');
+                    }
+                });
+            });
+
+            // Cart overlay functionality
+            const cartOverlay = document.getElementById('cart-overlay');
+            const cartButtons = document.querySelectorAll('[data-event*="toggleCart"]');
+            
+            cartButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    cartOverlay.classList.toggle('hidden');
+                });
+            });
+
+            // Close cart when clicking overlay
+            cartOverlay.addEventListener('click', (e) => {
+                if (e.target === cartOverlay) {
+                    cartOverlay.classList.add('hidden');
+                }
+            });
+
+            // Close cart button
+            document.querySelectorAll('[data-event*="closeCart"]').forEach(button => {
+                button.addEventListener('click', () => {
+                    cartOverlay.classList.add('hidden');
+                });
+            });
+
+            // Add to cart buttons (placeholder functionality)
+            document.querySelectorAll('[data-event*="addToCart"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    // TODO: Implement add to cart functionality
+                    this.innerHTML = '<i class="fas fa-check mr-2"></i>Добавлено';
+                    this.classList.add('bg-success');
+                    this.classList.remove('bg-primary', 'hover:bg-orange-600');
+                    
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-plus mr-2"></i>В корзину';
+                        this.classList.remove('bg-success');
+                        this.classList.add('bg-primary', 'hover:bg-orange-600');
+                    }, 2000);
+                });
+            });
+
+            // Scroll to menu functionality
+            document.querySelectorAll('[data-event*="scrollToMenu"]').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.getElementById('pizza').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
