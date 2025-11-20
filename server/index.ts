@@ -67,13 +67,13 @@ app.use((req, res, next) => {
 
   // ALWAYS serve the app on the port specified in the environment variable PORT
   // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
+  // On hosting platforms (Render, Heroku, etc.) the process must bind to 0.0.0.0
+  // and use the provided PORT env var. Do not bind to 127.0.0.1.
   const port = parseInt(process.env.PORT || '5000', 10);
-  // КОРРЕКТИРОВКА: Устанавливаем '127.0.0.1' по умолчанию для Windows-совместимости
-  const host = process.env.HOST || "127.0.0.1"; 
-  
-  // КОРРЕКТИРОВКА: Используем server.listen(port, host, callback) для устранения ENOTSUP
+  const host = process.env.HOST || "0.0.0.0";
+
+  // Bind to the provided host and port. Many PaaS require 0.0.0.0 so the
+  // external load balancer can route traffic to the container.
   server.listen(port, host, () => {
     log(`serving on http://${host}:${port}`);
   });
