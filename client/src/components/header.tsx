@@ -16,7 +16,7 @@ export default function Header() {
               <svg className="inline-block w-8 h-8 mr-2" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
               </svg>
-              Pizza Time
+              Ваше Имя организации
             </div>
             <div className="hidden md:flex items-center text-sm text-secondary">
               <Clock className="w-4 h-4 mr-1" />
@@ -26,8 +26,8 @@ export default function Header() {
           
           <div className="flex items-center space-x-4">
             <div className="hidden md:flex flex-col items-end text-sm">
-              <div className="font-semibold text-secondary">+7 940 744 22 55</div>
-              <div className="text-gray-600">г. Сухум ул. Эшба 185</div>
+              <div className="font-semibold text-secondary">+7 940 943 55 55</div>
+              <div className="text-gray-600">г. Сухум ул.</div>
             </div>
             <Link href="/cart">
               <Button 

@@ -5,6 +5,12 @@ import { insertCartItemSchema, insertOrderSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // In-memory promo codes (for demo). In production move to DB/storage.
+  const promoCodes = new Map<string, { discount: number; active: boolean }>([
+    ["PROMO10", { discount: 0.10, active: true }],
+    ["PIZZA2024", { discount: 0.10, active: true }],
+    ["WELCOME", { discount: 0.10, active: true }]
+  ]);
   // Get all menu items
   app.get("/api/menu", async (req, res) => {
     try {
@@ -128,5 +134,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+  // Apply promo code endpoint
+  app.post('/api/promo/apply', async (req, res) => {
+    try {
+      const { code } = req.body;
+      if (!code || typeof code !== 'string') {
+        return res.status(400).json({ success: false, message: 'Код не указан' });
+      }
+
+      const normalized = code.toUpperCase().trim();
+      const promo = promoCodes.get(normalized);
+      if (!promo || !promo.active) {
+        return res.status(200).json({ success: false, message: 'Код не найден или не активен' });
+      }
+
+      return res.status(200).json({ success: true, discount: promo.discount, code: normalized });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: 'Ошибка сервера' });
+    }
+  });
   return httpServer;
 }

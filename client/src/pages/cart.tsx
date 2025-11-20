@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCart } from "@/hooks/use-cart";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { ArrowLeft, Minus, Plus, X, Truck, Store, Banknote, CreditCard as CardIcon, ShoppingCart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -29,6 +29,74 @@ export default function CartPage() {
   
   const { toast } = useToast();
 
+  // Promo code state
+  const [promoCode, setPromoCode] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string; percent: number } | null>(null);
+  const [promoMessage, setPromoMessage] = useState<string | null>(null);
+  const [promoStatus, setPromoStatus] = useState<'success' | 'error' | null>(null);
+  
+  // Restore applied promo from localStorage on load
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('appliedPromo');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.code && typeof parsed.percent === 'number') {
+          setAppliedPromo({ code: parsed.code, percent: parsed.percent });
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
+  const applyPromo = async () => {
+    const code = (promoCode || '').toString().toUpperCase().trim();
+    setPromoMessage(null);
+    setPromoStatus(null);
+    if (!code) {
+      setPromoMessage('Введите промо-код');
+      setPromoStatus('error');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/promo/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+
+      // Try to parse JSON, but handle non-JSON responses gracefully
+      let data: any = null;
+      try {
+        data = await res.json();
+      } catch (parseErr) {
+        const text = await res.text();
+        console.warn('Non-JSON response from /api/promo/apply:', text);
+        setPromoMessage(`Ошибка сервера: ${res.status} ${res.statusText}`);
+        setPromoStatus('error');
+        return;
+      }
+
+      if (res.ok && data && data.success && typeof data.discount === 'number') {
+        setAppliedPromo({ code, percent: data.discount });
+        setPromoMessage(`✓ Промо-код применён! Скидка ${Math.round(data.discount * 100)}%`);
+        setPromoStatus('success');
+        localStorage.setItem('appliedPromo', JSON.stringify({ code, percent: data.discount }));
+      } else {
+        setAppliedPromo(null);
+        setPromoMessage(data?.message || `Код не действителен (HTTP ${res.status})`);
+        setPromoStatus('error');
+        localStorage.removeItem('appliedPromo');
+      }
+    } catch (error) {
+      console.error('Network or fetch error when applying promo:', error);
+      setPromoMessage('Ошибка при проверке кода — проверьте, запущен ли сервер');
+      setPromoStatus('error');
+    }
+  };
+
   const handleQuantityChange = (itemId: string, newQuantity: number) => {
     try {
       if (newQuantity === 0) {
@@ -46,15 +114,16 @@ export default function CartPage() {
       `${item.menuItem.name} x${item.quantity} = ${Math.floor(parseFloat(item.menuItem.price) * item.quantity)} ₽`
     ).join('\n');
     
-    const subtotal = parseInt(getTotalPrice());
-    const deliveryFee = customerData.deliveryType === "delivery" ? 200 : 0;
-    const total = subtotal + deliveryFee;
+  const subtotal = parseInt(getTotalPrice());
+  const deliveryFee = customerData.deliveryType === "delivery" ? 200 : 0;
+  const discountAmount = appliedPromo ? Math.round(subtotal * appliedPromo.percent) : 0;
+  const total = subtotal - discountAmount + deliveryFee;
     
     return `🧾 ЧЕК PIZZA TIME
 ━━━━━━━━━━━━━━━━━━━━
 ${orderText}
 ━━━━━━━━━━━━━━━━━━━━
-Подытог: ${subtotal} ₽${deliveryFee > 0 ? `\nДоставка: ${deliveryFee} ₽` : ''}
+Подытог: ${subtotal} ₽${deliveryFee > 0 ? `\nДоставка: ${deliveryFee} ₽` : ''}${appliedPromo ? `\nСкидка (${appliedPromo.code}): -${discountAmount} ₽` : ''}
 ━━━━━━━━━━━━━━━━━━━━
 ИТОГО: ${total} ₽
 
@@ -87,10 +156,11 @@ ${orderText}
       return;
     }
 
-    const receipt = generateReceipt();
-    const subtotal = parseInt(getTotalPrice());
-    const deliveryFee = customerData.deliveryType === "delivery" ? 200 : 0;
-    const total = subtotal + deliveryFee;
+  const receipt = generateReceipt();
+  const subtotal = parseInt(getTotalPrice());
+  const deliveryFee = customerData.deliveryType === "delivery" ? 200 : 0;
+  const discountAmount = appliedPromo ? Math.round(subtotal * appliedPromo.percent) : 0;
+  const total = subtotal - discountAmount + deliveryFee;
 
     let paymentInfo = "";
     if (customerData.paymentMethod === "transfer") {
@@ -106,7 +176,7 @@ ${orderText}
 
 🍕 Спасибо за заказ в Pizza Time!`;
 
-    const whatsappUrl = `https://wa.me/79407442255?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/79409435555?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
     
     toast({
@@ -117,6 +187,12 @@ ${orderText}
     clearCart();
     setCustomerData({ name: "", phone: "", address: "", deliveryType: "delivery", paymentMethod: "cash" });
   };
+
+  // Precompute totals for display
+  const subtotalNum = parseInt(getTotalPrice());
+  const deliveryFee = customerData.deliveryType === "delivery" ? 200 : 0;
+  const discountAmount = appliedPromo ? Math.round(subtotalNum * appliedPromo.percent) : 0;
+  const totalToPay = subtotalNum - discountAmount + deliveryFee;
 
   if (cartItems.length === 0) {
     return (
@@ -195,7 +271,7 @@ ${orderText}
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleQuantityChange(item.menuItemId, item.quantity - 1)}
+                            onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                             className="h-8 w-8 p-0 hover:bg-gray-200"
                             data-testid={`decrease-quantity-${item.menuItemId}`}
                           >
@@ -205,7 +281,7 @@ ${orderText}
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleQuantityChange(item.menuItemId, item.quantity + 1)}
+                            onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                             className="h-8 w-8 p-0 hover:bg-gray-200"
                             data-testid={`increase-quantity-${item.menuItemId}`}
                           >
@@ -216,7 +292,7 @@ ${orderText}
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => removeFromCart(item.menuItemId)}
+                          onClick={() => removeFromCart(item.id)}
                           className="h-8 w-8 p-0 text-destructive hover:bg-destructive hover:text-white"
                           data-testid={`remove-item-${item.menuItemId}`}
                         >
@@ -339,6 +415,24 @@ ${orderText}
             )}
           </div>
 
+          {/* Promo code */}
+          <div className="bg-gray-50 p-4 rounded-lg border">
+            <h3 className="font-semibold mb-2">Промо-код</h3>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Введите промо-код"
+                value={promoCode}
+                onChange={(e) => setPromoCode(e.target.value)}
+                aria-label="Промо-код"
+                data-testid="input-promo"
+              />
+              <Button onClick={applyPromo} className="bg-primary hover:bg-primary/90 text-white">Применить</Button>
+            </div>
+            {promoMessage && (
+              <div className={`mt-2 text-sm ${promoStatus === 'success' ? 'text-green-600' : 'text-red-600'}`}>{promoMessage}</div>
+            )}
+          </div>
+
           {/* Order Summary */}
           <Card className="bg-gray-50">
             <CardContent className="p-4">
@@ -346,20 +440,24 @@ ${orderText}
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>Подытог:</span>
-                  <span className="font-semibold">{getTotalPrice()} ₽</span>
+                  <span className="font-semibold">{subtotalNum} ₽</span>
                 </div>
                 {customerData.deliveryType === "delivery" && (
                   <div className="flex justify-between">
                     <span>Доставка:</span>
-                    <span className="font-semibold">200 ₽</span>
+                    <span className="font-semibold">{deliveryFee} ₽</span>
+                  </div>
+                )}
+                {appliedPromo && (
+                  <div className="flex justify-between text-sm text-green-700">
+                    <span>Скидка ({appliedPromo.code}):</span>
+                    <span className="font-semibold">-{discountAmount} ₽</span>
                   </div>
                 )}
                 <div className="border-t pt-2 mt-2">
                   <div className="flex justify-between text-lg">
                     <span className="font-semibold">Итого:</span>
-                    <span className="font-bold text-primary">
-                      {parseInt(getTotalPrice()) + (customerData.deliveryType === "delivery" ? 200 : 0)} ₽
-                    </span>
+                    <span className="font-bold text-primary">{totalToPay} ₽</span>
                   </div>
                 </div>
               </div>

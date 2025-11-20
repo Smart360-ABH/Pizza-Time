@@ -76,7 +76,8 @@ export function serveStatic(app: Express) {
     );
   }
 
-  app.use(express.static(distPath));
+  // Serve static with cache headers (7 days)
+  app.use(express.static(distPath, { maxAge: 7 * 24 * 60 * 60 * 1000 }));
 
   // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {

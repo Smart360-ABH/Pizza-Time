@@ -52,7 +52,7 @@ export default function CartOverlay() {
     const deliveryFee = customerData.deliveryType === "delivery" ? 200 : 0;
     const total = subtotal + deliveryFee;
     
-    return `🧾 ЧЕК PIZZA TIME
+    return `🧾 ЧЕК Ваша организация
 ━━━━━━━━━━━━━━━━━━━━
 ${orderText}
 ━━━━━━━━━━━━━━━━━━━━
@@ -97,7 +97,7 @@ ${orderText}
     let paymentInfo = "";
     if (customerData.paymentMethod === "transfer") {
       paymentInfo = `\n💳 РЕКВИЗИТЫ ДЛЯ ОПЛАТЫ:
-Карта Сбербанк: 2202 2061 8765 4321
+Карта Сбербанк: 0000 0000 0000 0000
 Получатель: ИП Иванов И.И.
 Сумма: ${total} ₽
 
@@ -106,9 +106,9 @@ ${orderText}
 
     const message = `${receipt}${paymentInfo}
 
-🍕 Спасибо за заказ в Pizza Time!`;
+🍕 Спасибо за заказ в Ваша организация!`;
 
-    const whatsappUrl = `https://wa.me/79407442255?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/79409435555?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
     
     toast({
@@ -193,7 +193,7 @@ ${orderText}
                       <Store className="w-5 h-5 mr-2 text-primary" />
                       <div>
                         <div className="font-medium">Самовывоз</div>
-                        <div className="text-sm text-gray-600">г. Сухум ул. Эшба 185 · Бесплатно</div>
+                        <div className="text-sm text-gray-600">г. Сухум ул. · Бесплатно</div>
                       </div>
                     </Label>
                   </div>
@@ -249,7 +249,7 @@ ${orderText}
                     id="phone"
                     value={customerData.phone}
                     onChange={(e) => setCustomerData(prev => ({ ...prev, phone: e.target.value }))}
-                    placeholder="+7 940 744 22 55"
+                    placeholder="+7 940 943 55 55"
                     data-testid="input-phone"
                   />
                 </div>
@@ -290,7 +290,7 @@ ${orderText}
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => handleQuantityChange(item.menuItemId, item.quantity - 1)}
+                                onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                                 className="h-8 w-8 p-0 hover:bg-gray-200"
                                 data-testid={`decrease-quantity-${item.menuItemId}`}
                               >
@@ -300,7 +300,7 @@ ${orderText}
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => handleQuantityChange(item.menuItemId, item.quantity + 1)}
+                                onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                                 className="h-8 w-8 p-0 hover:bg-gray-200"
                                 data-testid={`increase-quantity-${item.menuItemId}`}
                               >
@@ -310,7 +310,7 @@ ${orderText}
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => removeFromCart(item.menuItemId)}
+                              onClick={() => removeFromCart(item.id)}
                               className="h-8 w-8 p-0 text-destructive hover:bg-destructive hover:text-white"
                               data-testid={`remove-item-${item.menuItemId}`}
                             >

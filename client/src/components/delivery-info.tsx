@@ -15,7 +15,7 @@ export default function DeliveryInfo() {
               <Bike className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-semibold mb-2">Бесплатная доставка</h3>
-            <p className="opacity-90">При заказе от 500 рублей доставляем бесплатно</p>
+            <p className="opacity-90">При заказе от 1000 рублей доставляем бесплатно</p>
           </div>
           
           <div className="text-center">
